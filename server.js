@@ -1,8 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
-
-const db = require("./db");
 
 const app = express();
 
@@ -30,100 +27,73 @@ app.get("/", (req, res) => {
 
 /*
 -----------------------------------
-CHECK DATABASE CONNECTION
+CHECK API
 -----------------------------------
 */
 
-app.get("/check-db", (req, res) => {
-  db.query("SELECT 1", (err) => {
-    if (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Database connection failed",
-      });
-    }
-
-    res.json({
-      success: true,
-      message: "Database connected successfully",
-    });
+app.get("/health", (req, res) => {
+  res.json({
+    success: true,
+    message: "API working successfully",
   });
 });
 
 /*
 -----------------------------------
-SUBMIT INTERVIEW
+SUBMIT INTERVIEW (WITHOUT DB)
 -----------------------------------
 */
 
 app.post("/submit-interview", (req, res) => {
-  const { name, designation, interview_time } = req.body;
+  const {
+    name,
+    designation,
+    interview_time,
+  } = req.body;
 
-  /*
-  VALIDATION
-  */
-
-  if (!name || !designation || !interview_time) {
+  if (
+    !name ||
+    !designation ||
+    !interview_time
+  ) {
     return res.status(400).json({
       success: false,
       message: "All fields are required",
     });
   }
 
-  /*
-  INSERT QUERY
-  */
-
-  const sql = `
-    INSERT INTO interviews
-    (name, designation, interview_time)
-    VALUES (?, ?, ?)
-  `;
-
-  db.query(
-    sql,
-    [name, designation, interview_time],
-    (err, result) => {
-      if (err) {
-        console.log(err);
-
-        return res.status(500).json({
-          success: false,
-          message: "Failed to submit interview",
-        });
-      }
-
-      res.json({
-        success: true,
-        message: "Interview submitted successfully",
-      });
-    }
-  );
+  res.json({
+    success: true,
+    message: "Interview submitted successfully",
+    data: {
+      name,
+      designation,
+      interview_time,
+    },
+  });
 });
 
 /*
 -----------------------------------
-GET ALL INTERVIEWS
+GET ALL INTERVIEWS (DUMMY DATA)
 -----------------------------------
 */
 
 app.get("/interviews", (req, res) => {
-  const sql = `
-    SELECT *
-    FROM interviews
-    ORDER BY id DESC
-  `;
-
-  db.query(sql, (err, result) => {
-    if (err) {
-      return res.status(500).json({
-        success: false,
-        message: "Failed to fetch interviews",
-      });
-    }
-
-    res.json(result);
-  });
+  res.json([
+    {
+      id: 1,
+      name: "John",
+      designation: "DevOps Engineer",
+      interview_time: "10:00 AM",
+    },
+    {
+      id: 2,
+      name: "David",
+      designation: "Frontend Developer",
+      interview_time: "11:00 AM",
+    },
+  ]);
 });
 
 /*
