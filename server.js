@@ -15,11 +15,16 @@ MIDDLEWARE
 //     credentials: true,
 //   })
 // );
- origin: [
+app.use(
+  cors({
+    origin: [
       "http://localhost:3000",
       "http://13.205.180.173:3000",
       "https://yourdomain.com",
     ],
+    credentials: true,
+  })
+);
 // app.use(
 //   cors({
 //     origin: "http://localhost:3000",
