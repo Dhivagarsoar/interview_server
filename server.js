@@ -9,7 +9,18 @@ MIDDLEWARE
 -----------------------------------
 */
 
-app.use(cors());
+// app.use(
+//   cors({
+//     origin: "http://13.205.180.173:3000",
+//     credentials: true,
+//   })
+// );
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 /*
